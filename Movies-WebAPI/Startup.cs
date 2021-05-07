@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Movies_DAL.Database;
 using Movies_DAL.Repositories.Movies;
+using Movies_DAL.Services.Movies;
 
 namespace Movies_WebAPI
 {
@@ -30,6 +31,7 @@ namespace Movies_WebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IMoviesRepository, MoviesRepository>();
+            services.AddScoped<IMoviesService, MoviesService>();
 
             services.AddDbContext<MoviesContext>(options =>
             {
