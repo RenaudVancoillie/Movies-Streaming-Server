@@ -1,10 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.Extensions.Configuration;
+using Movies_DAL.Models;
 
 #nullable disable
 
-namespace Movies_DAL.Models
+namespace Movies_DAL.Database
 {
     public partial class MoviesContext : DbContext
     {
@@ -12,9 +14,11 @@ namespace Movies_DAL.Models
         {
         }
 
-        public MoviesContext(DbContextOptions<MoviesContext> options)
+        public MoviesContext(DbContextOptions<MoviesContext> options, 
+                             IConfiguration Configuration)
             : base(options)
         {
+            this.Configuration = Configuration;
         }
 
         public virtual DbSet<Genre> Genres { get; set; }
@@ -22,13 +26,13 @@ namespace Movies_DAL.Models
         public virtual DbSet<Movie> Movies { get; set; }
         public virtual DbSet<MovieRole> MovieRoles { get; set; }
         public virtual DbSet<Person> Persons { get; set; }
+        public IConfiguration Configuration { get; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Initial Catalog=Movies;Integrated Security=True");
+                optionsBuilder.UseSqlServer(Configuration.GetConnectionString("Default"));
             }
         }
 
