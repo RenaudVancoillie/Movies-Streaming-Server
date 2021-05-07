@@ -10,5 +10,6 @@ namespace Movies_WebAPI.Controllers.Movies
     public interface IMoviesController
     {
         ActionResult<IEnumerable<MovieDTO>> GetAll();
+        ActionResult<MovieDTO> GetById(int id);
     }
 }

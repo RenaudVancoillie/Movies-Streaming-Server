@@ -10,5 +10,6 @@ namespace Movies_DAL.Services.Movies
     public interface IMoviesService
     {
         IEnumerable<MovieDTO> GetAll();
+        MovieDTO GetById(int id);
     }
 }

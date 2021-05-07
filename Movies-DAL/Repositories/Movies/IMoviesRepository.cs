@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Movies_DAL.DTO.Movies;
 using Movies_DAL.Models;
 
 namespace Movies_DAL.Repositories.Movies
@@ -10,5 +11,6 @@ namespace Movies_DAL.Repositories.Movies
     public interface IMoviesRepository
     {
         IEnumerable<Movie> GetAll();
+        MovieDTO GetById(int id);
     }
 }

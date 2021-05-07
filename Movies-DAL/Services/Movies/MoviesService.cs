@@ -29,5 +29,7 @@ namespace Movies_DAL.Services.Movies
                 .ProjectTo<MovieDTO>(mapper.ConfigurationProvider)
                 .AsEnumerable();
         }
+
+        public MovieDTO GetById(int id) => moviesRepository.GetById(id);
     }
 }

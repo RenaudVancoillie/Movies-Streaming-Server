@@ -36,5 +36,27 @@ namespace Movies_WebAPI.Controllers.Movies
                     $"Something went wrong: {exc.Message}");
             }
         }
+
+        [HttpGet("{id:int:min(1)}")]
+        [ProducesResponseType(typeof(MovieDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(string), StatusCodes.Status500InternalServerError)]
+        public ActionResult<MovieDTO> GetById(int id)
+        {
+            try
+            {
+                MovieDTO movie = moviesService.GetById(id);
+                if (movie == null)
+                {
+                    return NotFound($"Movie with id {id} not found.");
+                }
+                return Ok(movie);
+            }
+            catch (Exception exc)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    $"Something went wrong: {exc.Message}");
+            }
+        }
     }
 }
