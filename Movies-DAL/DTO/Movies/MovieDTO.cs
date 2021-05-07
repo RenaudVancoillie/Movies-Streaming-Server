@@ -8,7 +8,7 @@ namespace Movies_DAL.DTO.Movies
 {
     public class MovieDTO
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string ImdbId { get; set; }
         public string Title { get; set; }
         public string CoverUrl { get; set; }
