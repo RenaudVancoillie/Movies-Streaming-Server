@@ -21,7 +21,7 @@ namespace Movies_DAL.Repositories.Movies
         {
             return db.Movies
                 .OrderBy(m => m.Top250Rank)
-                .ToList();
+                .AsEnumerable();
         }
     }
 }
