@@ -38,6 +38,8 @@ namespace Movies_WebAPI
                 options.UseSqlServer(Configuration.GetConnectionString("Default"));
             });
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
