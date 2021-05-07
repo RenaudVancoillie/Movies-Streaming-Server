@@ -40,6 +40,13 @@ namespace Movies_WebAPI
 
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
+            {
+                builder.AllowAnyMethod()
+                       .AllowAnyHeader()
+                       .AllowAnyOrigin();
+            }));
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -56,6 +63,8 @@ namespace Movies_WebAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Movies_WebAPI v1"));
             }
+
+            app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();
 
