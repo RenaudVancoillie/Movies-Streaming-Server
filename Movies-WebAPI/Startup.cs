@@ -16,6 +16,7 @@ using Movies_DAL.Database;
 using Movies_DAL.Repositories.Movies.Asynchronous;
 using Movies_DAL.Repositories.Movies.Synchronous;
 using Movies_DAL.Services.Movies;
+using Movies_WebAPI.Hubs.App;
 
 namespace Movies_WebAPI
 {
@@ -42,11 +43,14 @@ namespace Movies_WebAPI
 
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddSignalR();
+
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {
                 builder.AllowAnyMethod()
                        .AllowAnyHeader()
-                       .AllowAnyOrigin();
+                       .AllowCredentials()
+                       .WithOrigins("http://localhost:4200");
             }));
 
             services.AddControllers();
@@ -77,6 +81,7 @@ namespace Movies_WebAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<AppHub>("hubs/app");
             });
         }
     }
