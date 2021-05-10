@@ -13,7 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Movies_DAL.Database;
-using Movies_DAL.Repositories.Movies;
+using Movies_DAL.Repositories.Movies.Asynchronous;
+using Movies_DAL.Repositories.Movies.Synchronous;
 using Movies_DAL.Services.Movies;
 
 namespace Movies_WebAPI
@@ -30,7 +31,8 @@ namespace Movies_WebAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IMoviesRepository, MoviesRepository>();
+            services.AddScoped<ISynchronousMoviesRepository, EntityFrameworkCoreMoviesRepository>();
+            services.AddScoped<IAsynchronousMoviesRepository, SqlMoviesRepository>();
             services.AddScoped<IMoviesService, MoviesService>();
 
             services.AddDbContext<MoviesContext>(options =>

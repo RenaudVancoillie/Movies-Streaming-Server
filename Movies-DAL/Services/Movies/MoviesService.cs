@@ -7,29 +7,38 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Movies_DAL.DTO.Movies;
 using Movies_DAL.Models;
-using Movies_DAL.Repositories.Movies;
+using Movies_DAL.Repositories.Movies.Asynchronous;
+using Movies_DAL.Repositories.Movies.Synchronous;
 
 namespace Movies_DAL.Services.Movies
 {
     public class MoviesService : IMoviesService
     {
-        private readonly IMoviesRepository moviesRepository;
+        private readonly ISynchronousMoviesRepository synchronousMoviesRepository;
+        private readonly IAsynchronousMoviesRepository asynchronousMoviesRepository;
         private readonly IMapper mapper;
 
-        public MoviesService(IMoviesRepository moviesRepository,
+        public MoviesService(ISynchronousMoviesRepository synchronousMoviesRepository,
+                             IAsynchronousMoviesRepository asynchronousMoviesRepository,
                              IMapper mapper)
         {
-            this.moviesRepository = moviesRepository;
+            this.synchronousMoviesRepository = synchronousMoviesRepository;
+            this.asynchronousMoviesRepository = asynchronousMoviesRepository;
             this.mapper = mapper;
         }
 
         public IEnumerable<MovieDTO> GetAll()
         {
-            return moviesRepository.GetAll().AsQueryable()
+            return synchronousMoviesRepository.GetAll().AsQueryable()
                 .ProjectTo<MovieDTO>(mapper.ConfigurationProvider)
                 .AsEnumerable();
         }
 
-        public MovieDTO GetById(int id) => moviesRepository.GetById(id);
+        public IAsyncEnumerable<MovieDTO> GetAllStreaming()
+        {
+            return asynchronousMoviesRepository.GetAllStreaming();
+        }
+
+        public MovieDTO GetById(int id) => synchronousMoviesRepository.GetById(id);
     }
 }

@@ -9,14 +9,14 @@ using Movies_DAL.Database;
 using Movies_DAL.DTO.Movies;
 using Movies_DAL.Models;
 
-namespace Movies_DAL.Repositories.Movies
+namespace Movies_DAL.Repositories.Movies.Synchronous
 {
-    public class MoviesRepository : IMoviesRepository
+    public class EntityFrameworkCoreMoviesRepository : ISynchronousMoviesRepository
     {
         private readonly MoviesContext db;
         private readonly IMapper mapper;
 
-        public MoviesRepository(MoviesContext moviesContext, 
+        public EntityFrameworkCoreMoviesRepository(MoviesContext moviesContext, 
                                 IMapper mapper)
         {
             db = moviesContext;

@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Movies_DAL.DTO.Movies;
+using Movies_DAL.Models;
 
-namespace Movies_DAL.Services.Movies
+namespace Movies_DAL.Repositories.Movies.Asynchronous
 {
-    public interface IMoviesService
+    public interface IAsynchronousMoviesRepository
     {
-        IEnumerable<MovieDTO> GetAll();
+        Task<IEnumerable<Movie>> GetAll();
         IAsyncEnumerable<MovieDTO> GetAllStreaming();
-        MovieDTO GetById(int id);
     }
 }

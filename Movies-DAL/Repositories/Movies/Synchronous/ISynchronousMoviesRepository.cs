@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Movies_DAL.DTO.Movies;
 using Movies_DAL.Models;
 
-namespace Movies_DAL.Repositories.Movies
+namespace Movies_DAL.Repositories.Movies.Synchronous
 {
-    public interface IMoviesRepository
+    public interface ISynchronousMoviesRepository
     {
         IEnumerable<Movie> GetAll();
         MovieDTO GetById(int id);
