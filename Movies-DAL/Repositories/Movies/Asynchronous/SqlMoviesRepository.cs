@@ -77,19 +77,17 @@ namespace Movies_DAL.Repositories.Movies.Asynchronous
                 MovieDTO movie = new();
                 while (dbDataReader.Read())
                 {
-                    yield return new MovieDTO()
-                    {
-                        Id = (long)dbDataReader[0],
-                        ImdbId = (string)dbDataReader[1],
-                        Title = (string)dbDataReader[2],
-                        CoverUrl = (string)dbDataReader[3],
-                        Year = (int)dbDataReader[4],
-                        OriginalAirDate = (string)dbDataReader[5],
-                        Kind = (string)dbDataReader[6],
-                        Rating = (decimal)dbDataReader[7],
-                        Plot = (string)(dbDataReader[8] == DBNull.Value ? string.Empty : dbDataReader[8]),
-                        Top250Rank = (int)dbDataReader[9]
-                    };
+                    movie.Id = (long)dbDataReader[0];
+                    movie.ImdbId = (string)dbDataReader[1];
+                    movie.Title = (string)dbDataReader[2];
+                    movie.CoverUrl = (string)dbDataReader[3];
+                    movie.Year = (int)dbDataReader[4];
+                    movie.OriginalAirDate = (string)dbDataReader[5];
+                    movie.Kind = (string)dbDataReader[6];
+                    movie.Rating = (decimal)dbDataReader[7];
+                    movie.Plot = (string)(dbDataReader[8] == DBNull.Value ? string.Empty : dbDataReader[8]);
+                    movie.Top250Rank = (int)dbDataReader[9];
+                    yield return movie;
                 }
             }
             finally
