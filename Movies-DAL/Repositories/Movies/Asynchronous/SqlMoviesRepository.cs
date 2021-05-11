@@ -70,21 +70,21 @@ namespace Movies_DAL.Repositories.Movies.Asynchronous
             return GetStreaming(dbConnection, dbCommand);
         }
 
-        public IAsyncEnumerable<MovieDTO> GetFirstMoviesStreaming(int count)
+        public IAsyncEnumerable<MovieDTO> GetFirstMoviesStreaming(int? count)
         {
             DbConnection dbConnection = CreateDbConnection();
             DbCommand dbCommand = CreateCommandForGetFirstCount(dbConnection, count);
             return GetStreaming(dbConnection, dbCommand);
         }
 
-        public IAsyncEnumerable<MovieDTO> GetMoviesBeforeStreaming(int count, int before)
+        public IAsyncEnumerable<MovieDTO> GetMoviesBeforeStreaming(int? count, int before)
         {
             DbConnection dbConnection = CreateDbConnection();
             DbCommand dbCommand = CreateCommandForGetBefore(dbConnection, count, before);
             return GetStreaming(dbConnection, dbCommand);
         }
 
-        public IAsyncEnumerable<MovieDTO> GetMoviesAfterStreaming(int count, int after)
+        public IAsyncEnumerable<MovieDTO> GetMoviesAfterStreaming(int? count, int after)
         {
             DbConnection dbConnection = CreateDbConnection();
             DbCommand dbCommand = CreateCommandForGetAfter(dbConnection, count, after);
@@ -137,22 +137,34 @@ namespace Movies_DAL.Repositories.Movies.Asynchronous
             return CreateCommand(dbConnection, query);
         }
 
-        private static DbCommand CreateCommandForGetFirstCount(DbConnection dbConnection, int count)
+        private static DbCommand CreateCommandForGetFirstCount(DbConnection dbConnection, int? count)
         {
-            string query = $"SELECT TOP({count}) * FROM movies ORDER BY top_250_rank ASC";
+            string query = $"{BuildSelectStatement(count)} FROM movies ORDER BY top_250_rank ASC";
             return CreateCommand(dbConnection, query);
         }
 
-        private static DbCommand CreateCommandForGetBefore(DbConnection dbConnection, int count, int before)
+        private static DbCommand CreateCommandForGetBefore(DbConnection dbConnection, int? count, int before)
         {
-            string query = $"SELECT TOP({count}) * FROM movies WHERE top_250_rank < {before} ORDER BY top_250_rank DESC";
+            string query = $"{BuildSelectStatement(count)} FROM movies WHERE top_250_rank < {before} ORDER BY top_250_rank DESC";
             return CreateCommand(dbConnection, query);
         }
 
-        private static DbCommand CreateCommandForGetAfter(DbConnection dbConnection, int count, int after)
+        private static DbCommand CreateCommandForGetAfter(DbConnection dbConnection, int? count, int after)
         {
-            string query = $"SELECT TOP({count}) * FROM movies WHERE top_250_rank > {after} ORDER BY top_250_rank ASC";
+            string query = $"{BuildSelectStatement(count)} FROM movies WHERE top_250_rank > {after} ORDER BY top_250_rank ASC";
             return CreateCommand(dbConnection, query);
+        }
+
+        private static string BuildSelectStatement(int? count)
+        {
+            if (count == null)
+            {
+                return $"SELECT *";
+            }
+            else
+            {
+                return $"SELECT TOP({count}) *";
+            }
         }
     }
 }

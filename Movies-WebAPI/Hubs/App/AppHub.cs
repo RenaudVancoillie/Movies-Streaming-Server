@@ -37,7 +37,7 @@ namespace Movies_WebAPI.Hubs.App
             return channel.Reader;
         }
 
-        public async IAsyncEnumerable<MovieDTO> GetPaginatedMoviesStreamingWithIAsyncEnumerable(int delay, int count = 50, int? before = null, int? after = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async IAsyncEnumerable<MovieDTO> GetPaginatedMoviesStreamingWithIAsyncEnumerable(int delay, int? count, int? before, int? after, [EnumeratorCancellation] CancellationToken cancellationToken)
         {
             await foreach (MovieDTO movie in moviesService.GetAllStreamingWithPointer(count, before, after))
             {
@@ -47,7 +47,7 @@ namespace Movies_WebAPI.Hubs.App
             }
         }
 
-        public ChannelReader<MovieDTO> GetPaginatedMoviesStreamingWithChannelReader(int delay, int count, int? before, int? after, CancellationToken cancellationToken)
+        public ChannelReader<MovieDTO> GetPaginatedMoviesStreamingWithChannelReader(int delay, int? count, int? before, int? after, CancellationToken cancellationToken)
         {
             Channel<MovieDTO> channel = Channel.CreateUnbounded<MovieDTO>();
             _ = WritePaginatedItemAsync(channel.Writer, delay, count, before, after, cancellationToken);
@@ -75,7 +75,7 @@ namespace Movies_WebAPI.Hubs.App
             }
         }
 
-        private async Task WritePaginatedItemAsync(ChannelWriter<MovieDTO> writer, int delay, int count, int? before, int? after, CancellationToken cancellationToken)
+        private async Task WritePaginatedItemAsync(ChannelWriter<MovieDTO> writer, int delay, int? count, int? before, int? after, CancellationToken cancellationToken)
         {
             Exception localException = null;
             try

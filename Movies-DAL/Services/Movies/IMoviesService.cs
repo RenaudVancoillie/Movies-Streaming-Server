@@ -11,7 +11,7 @@ namespace Movies_DAL.Services.Movies
     {
         IEnumerable<MovieDTO> GetAll();
         IAsyncEnumerable<MovieDTO> GetAllStreaming();
-        IAsyncEnumerable<MovieDTO> GetAllStreamingWithPointer(int count, int? before, int? after);
+        IAsyncEnumerable<MovieDTO> GetAllStreamingWithPointer(int? count, int? before, int? after);
         MovieDTO GetById(int id);
     }
 }
