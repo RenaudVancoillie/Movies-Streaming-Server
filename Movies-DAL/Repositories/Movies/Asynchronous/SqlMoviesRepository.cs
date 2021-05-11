@@ -63,15 +63,40 @@ namespace Movies_DAL.Repositories.Movies.Asynchronous
             return movies;
         }
 
-        public async IAsyncEnumerable<MovieDTO> GetAllStreaming()
+        public IAsyncEnumerable<MovieDTO> GetAllStreaming()
         {
             DbConnection dbConnection = CreateDbConnection();
-            DbCommand dbCommand = null;
+            DbCommand dbCommand = CreateCommandForGetAll(dbConnection);
+            return GetStreaming(dbConnection, dbCommand);
+        }
+
+        public IAsyncEnumerable<MovieDTO> GetFirstMoviesStreaming(int count)
+        {
+            DbConnection dbConnection = CreateDbConnection();
+            DbCommand dbCommand = CreateCommandForGetFirstCount(dbConnection, count);
+            return GetStreaming(dbConnection, dbCommand);
+        }
+
+        public IAsyncEnumerable<MovieDTO> GetMoviesBeforeStreaming(int count, int before)
+        {
+            DbConnection dbConnection = CreateDbConnection();
+            DbCommand dbCommand = CreateCommandForGetBefore(dbConnection, count, before);
+            return GetStreaming(dbConnection, dbCommand);
+        }
+
+        public IAsyncEnumerable<MovieDTO> GetMoviesAfterStreaming(int count, int after)
+        {
+            DbConnection dbConnection = CreateDbConnection();
+            DbCommand dbCommand = CreateCommandForGetAfter(dbConnection, count, after);
+            return GetStreaming(dbConnection, dbCommand);
+        }
+
+        private static async IAsyncEnumerable<MovieDTO> GetStreaming(DbConnection dbConnection, DbCommand dbCommand)
+        {
             DbDataReader dbDataReader = null;
             try
             {
                 await dbConnection.OpenAsync().ConfigureAwait(false);
-                dbCommand = CreateCommandForGetAll(dbConnection);
                 dbDataReader = await dbCommand.ExecuteReaderAsync().ConfigureAwait(false);
 
                 MovieDTO movie = new();
@@ -98,12 +123,36 @@ namespace Movies_DAL.Repositories.Movies.Asynchronous
             }
         }
 
-        private static DbCommand CreateCommandForGetAll(DbConnection dbConnection)
+        private static DbCommand CreateCommand(DbConnection dbConnection, string query)
         {
             DbCommand dbCommand = dbConnection.CreateCommand();
-            dbCommand.CommandText = "SELECT * FROM movies";
             dbCommand.CommandType = CommandType.Text;
+            dbCommand.CommandText = query;
             return dbCommand;
+        }
+
+        private static DbCommand CreateCommandForGetAll(DbConnection dbConnection)
+        {
+            string query = "SELECT * FROM movies";
+            return CreateCommand(dbConnection, query);
+        }
+
+        private static DbCommand CreateCommandForGetFirstCount(DbConnection dbConnection, int count)
+        {
+            string query = $"SELECT TOP({count}) * FROM movies ORDER BY top_250_rank ASC";
+            return CreateCommand(dbConnection, query);
+        }
+
+        private static DbCommand CreateCommandForGetBefore(DbConnection dbConnection, int count, int before)
+        {
+            string query = $"SELECT TOP({count}) * FROM movies WHERE top_250_rank < {before} ORDER BY top_250_rank DESC";
+            return CreateCommand(dbConnection, query);
+        }
+
+        private static DbCommand CreateCommandForGetAfter(DbConnection dbConnection, int count, int after)
+        {
+            string query = $"SELECT TOP({count}) * FROM movies WHERE top_250_rank > {after} ORDER BY top_250_rank ASC";
+            return CreateCommand(dbConnection, query);
         }
     }
 }

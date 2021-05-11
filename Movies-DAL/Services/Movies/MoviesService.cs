@@ -39,6 +39,22 @@ namespace Movies_DAL.Services.Movies
             return asynchronousMoviesRepository.GetAllStreaming();
         }
 
+        public IAsyncEnumerable<MovieDTO> GetAllStreamingWithPointer(int count, int? before, int? after)
+        {
+            if (before.HasValue)
+            {
+                return asynchronousMoviesRepository.GetMoviesBeforeStreaming(count, (int)before);
+            }
+            else if (after.HasValue)
+            {
+                return asynchronousMoviesRepository.GetMoviesAfterStreaming(count, (int)after);
+            }
+            else
+            {
+                return asynchronousMoviesRepository.GetFirstMoviesStreaming(count);
+            }
+        }
+
         public MovieDTO GetById(int id) => synchronousMoviesRepository.GetById(id);
     }
 }

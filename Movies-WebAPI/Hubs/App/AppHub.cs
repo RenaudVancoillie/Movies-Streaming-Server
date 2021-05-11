@@ -11,7 +11,7 @@ using Movies_DAL.Services.Movies;
 
 namespace Movies_WebAPI.Hubs.App
 {
-    public class AppHub : Hub<IAppClient>, IAppHub
+    public class AppHub : Hub, IAppHub
     {
         private readonly IMoviesService moviesService;
 
@@ -37,12 +37,50 @@ namespace Movies_WebAPI.Hubs.App
             return channel.Reader;
         }
 
+        public async IAsyncEnumerable<MovieDTO> GetPaginatedMoviesStreamingWithIAsyncEnumerable(int delay, int count = 50, int? before = null, int? after = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            await foreach (MovieDTO movie in moviesService.GetAllStreamingWithPointer(count, before, after))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                yield return movie;
+                await Task.Delay(delay, cancellationToken);
+            }
+        }
+
+        public ChannelReader<MovieDTO> GetPaginatedMoviesStreamingWithChannelReader(int delay, int count, int? before, int? after, CancellationToken cancellationToken)
+        {
+            Channel<MovieDTO> channel = Channel.CreateUnbounded<MovieDTO>();
+            _ = WritePaginatedItemAsync(channel.Writer, delay, count, before, after, cancellationToken);
+            return channel.Reader;
+        }
+
         private async Task WriteItemAsync(ChannelWriter<MovieDTO> writer, int delay, CancellationToken cancellationToken)
         {
             Exception localException = null;
             try
             {
                 await foreach (MovieDTO movie in moviesService.GetAllStreaming())
+                {
+                    await writer.WriteAsync(movie, cancellationToken);
+                    await Task.Delay(delay, cancellationToken);
+                }
+            }
+            catch (Exception exc)
+            {
+                localException = exc;
+            }
+            finally
+            {
+                writer.Complete(localException);
+            }
+        }
+
+        private async Task WritePaginatedItemAsync(ChannelWriter<MovieDTO> writer, int delay, int count, int? before, int? after, CancellationToken cancellationToken)
+        {
+            Exception localException = null;
+            try
+            {
+                await foreach (MovieDTO movie in moviesService.GetAllStreamingWithPointer(count, before, after))
                 {
                     await writer.WriteAsync(movie, cancellationToken);
                     await Task.Delay(delay, cancellationToken);

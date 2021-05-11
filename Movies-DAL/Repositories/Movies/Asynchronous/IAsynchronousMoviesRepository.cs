@@ -12,5 +12,8 @@ namespace Movies_DAL.Repositories.Movies.Asynchronous
     {
         Task<IEnumerable<Movie>> GetAll();
         IAsyncEnumerable<MovieDTO> GetAllStreaming();
+        IAsyncEnumerable<MovieDTO> GetFirstMoviesStreaming(int count);
+        IAsyncEnumerable<MovieDTO> GetMoviesBeforeStreaming(int count, int before);
+        IAsyncEnumerable<MovieDTO> GetMoviesAfterStreaming(int count, int after);
     }
 }
